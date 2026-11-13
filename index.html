@@ -319,11 +319,12 @@ const LEGS=[
    {id:"20a",d:20,day:"Travel + baraat",hint:"worn on the way to Lucknow"},{id:"20b",d:20,day:"Evening cocktail"},
    {id:"21a",d:21,day:"Morning wear"},{id:"21b",d:21,day:"Bhaat"},{id:"21c",d:21,day:"Wedding"},
    {id:"22a",d:22,day:"Morning travel wear",hint:"Lucknow to Allahabad, packs in the Lucknow bag"}]},
- {bag:"ald",title:"Allahabad",range:"22 – 25 morning",sub:"back from Lucknow",tag:"Allahabad bag",slots:[
+ {bag:"ald",title:"Allahabad",range:"22 – 27",sub:"back from Lucknow, Delhi on the 27th",tag:"Allahabad bag",slots:[
    {id:"22b",d:22,day:"Muh dikhaai"},{id:"23a",d:23,day:"Day wear"},{id:"23b",d:23,day:"Wedding + reception"},
-   {id:"24a",d:24,day:"Wedding anniversary"},{id:"25a",d:25,day:"Vinayak cocktails"}]},
- {bag:"del",title:"Delhi",range:"25 – 29",sub:"stays at home",tag:"Stays in Delhi",slots:[
-   {id:"26a",d:26,day:"Vinayak wedding"},{id:"27a",d:27,day:"Misc day wear + travel wear"},{id:"28a",d:28,day:"Day wear"},
+   {id:"24a",d:24,day:"Wedding anniversary"},{id:"25a",d:25,day:"Vinayak cocktails"},{id:"26a",d:26,day:"Vinayak wedding"},
+   {id:"27a",d:27,day:"Misc day wear + travel wear",hint:"travel to Delhi, packs in the Allahabad bag"}]},
+ {bag:"del",title:"Delhi",range:"28 – 29",sub:"stays at home",tag:"Stays in Delhi",slots:[
+   {id:"28a",d:28,day:"Day wear"},
    {id:"28b",d:28,day:"Delhi reception"},{id:"29a",d:29,day:"Day wear"}]}
 ];
 const SLOTS=LEGS.flatMap(l=>l.slots.map(s=>({...s,bag:l.bag})));
@@ -429,7 +430,7 @@ function renderPack(){
     return `<div class="dl"><b>${s.d}</b><div class="t"><b style="font:600 14px var(--sans)">${esc(s.day)}</b><small>${ids.length?ids.map(i=>esc(nameOf(byId[i]))).join(" · "):"Nothing yet"}${state.notes[s.id]?" · "+esc(state.notes[s.id]):""}</small></div></div>`;}).join("");
   const away=st.carry+st.back;
   return `<div class="pk-h"><h2>Packing</h2><p>What goes in which bag, built from the plan. ${away?`<b>${away}</b> ${away===1?"outfit is":"outfits are"} in the other city.`:"Every outfit with a city marked is already where it needs to be."}${st.unknown?` ${st.unknown} still ${st.unknown===1?"needs":"need"} a city: tap the ? on the photo.`:""}</p></div>
-    <div class="bags">${sec("lko","20th travel to 22nd morning")}${sec("ald","18–19 and 22–25 morning")}${sec("del","25th onwards")}</div>
+    <div class="bags">${sec("lko","20th travel to 22nd morning")}${sec("ald","18–19 and 22–27")}${sec("del","28th onwards")}</div>
     <section class="daylist"><h3>Day by day</h3>${dl}</section>
     <section class="data"><p>The plan and photos are saved in this browser on this device. Save a backup file now and then, and use it to move everything to another phone.</p>
       <button class="btn pri" data-act="copyText">${ic("copy",15)}Copy plan as text</button><button class="btn" data-act="exportFile">${ic("down",15)}Save backup file</button><button class="btn" data-act="importFile">${ic("up",15)}Load backup file</button><button class="btn warn" id="clearBtn" data-act="clear">Clear placements</button></section>`;
