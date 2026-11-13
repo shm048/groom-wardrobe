@@ -1,3 +1,651 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Groom Wardrobe</title>
-<style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#f1efeb;color:#1b1819;font:16px/1.5 system-ui,sans-serif;padding:24px}h1{font:400 34px Georgia,serif;margin:0 0 8px}p{color:#76706d;max-width:34ch}</style></head>
-<body><div><h1>Groom wardrobe</h1><p>The planner is being built. Check back in a few hours.</p></div></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#fbfaf8">
+<title>Groom Wardrobe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap">
+<style>
+/* Layout concept: the groom's wedding week as a grid of small day cards grouped by city, with a closet of his
+   outfits beside it (a sheet on phones). Neutral stone ground so the garments carry the colour; deep teal for
+   actions; city colours mark which bag a day belongs to. Photos live in this browser only. */
+:root{
+  --bg:#f1efeb; --surface:#fbfaf8; --raise:#ffffff; --sunk:#e8e5df;
+  --ink:#1b1819; --ink2:#4e4948; --muted:#76706d; --line:#dcd8d1; --line2:#c9c3ba;
+  --accent:#0d5c63; --accent-ink:#ffffff; --accent-soft:#d8ebeb;
+  --ald:#b04e0c; --ald-soft:#fbe5d1; --del:#1d58a2; --del-soft:#dce8f7; --lko:#6a42a0; --lko-soft:#ece4f8;
+  --ok:#1b7248; --warn:#ad2a22; --warn-soft:#fbe1de; --ok-soft:#d9f0e3;
+  --shadow:0 14px 40px rgba(27,24,25,.16);
+  --serif:"Instrument Serif","Iowan Old Style",Georgia,serif;
+  --sans:"Geist","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;
+  --r:16px;
+  --ease-out:cubic-bezier(.23,1,.32,1);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121011; --surface:#1a1718; --raise:#231f20; --sunk:#0e0c0d;
+  --ink:#f3efeb; --ink2:#cdc6c1; --muted:#9a928d; --line:#322d2e; --line2:#443e3f;
+  --accent:#58bcc3; --accent-ink:#04262a; --accent-soft:#12383b;
+  --ald:#f1904f; --ald-soft:#3b2110; --del:#7eadee; --del-soft:#14284a; --lko:#bc9ff1; --lko-soft:#291f43;
+  --ok:#66d495; --warn:#ff8c82; --warn-soft:#3f1815; --ok-soft:#123324;
+  --shadow:0 14px 40px rgba(0,0,0,.6); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121011; --surface:#1a1718; --raise:#231f20; --sunk:#0e0c0d;
+  --ink:#f3efeb; --ink2:#cdc6c1; --muted:#9a928d; --line:#322d2e; --line2:#443e3f;
+  --accent:#58bcc3; --accent-ink:#04262a; --accent-soft:#12383b;
+  --ald:#f1904f; --ald-soft:#3b2110; --del:#7eadee; --del-soft:#14284a; --lko:#bc9ff1; --lko-soft:#291f43;
+  --ok:#66d495; --warn:#ff8c82; --warn-soft:#3f1815; --ok-soft:#123324;
+  --shadow:0 14px 40px rgba(0,0,0,.6); color-scheme:dark}
+:root{padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.45 var(--sans);-webkit-tap-highlight-color:transparent}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--surface)}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:inherit}
+img{display:block;max-width:100%}
+h1,h2,h3,h4,p{margin:0}
+h1,h2,h3{font-weight:400;text-wrap:balance}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+[hidden]{display:none!important}
+.wrap{max-width:1520px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.ic{flex:none}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:var(--surface);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:10px 24px;flex-wrap:wrap;padding-block:12px}
+.brand h1{font:400 31px/1 var(--serif);letter-spacing:-.01em}
+.brand p{margin-top:5px;color:var(--muted);font-size:12.5px}
+.seg{display:inline-flex;background:var(--sunk);border-radius:999px;padding:3px;margin-left:auto}
+.seg button{padding:9px 20px;border-radius:999px;font-weight:500;font-size:13.5px;color:var(--ink2);transition:background-color 160ms var(--ease-out),color 160ms var(--ease-out)}
+.seg button[aria-selected="true"]{background:var(--accent);color:var(--accent-ink)}
+
+/* shell */
+.shell{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:28px;align-items:start;padding-block:8px 90px}
+.shell.single{grid-template-columns:minmax(0,1fr)}
+main{min-width:0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:9px 14px;border-radius:999px;border:1px solid var(--line2);background:var(--raise);font-weight:500;font-size:13px;color:var(--ink);transition:transform 160ms var(--ease-out),background-color 160ms var(--ease-out);min-height:38px}
+.btn:active{transform:scale(.97)}
+@media (hover:hover) and (pointer:fine){.btn:hover{background:var(--sunk)}}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+@media (hover:hover) and (pointer:fine){.btn.pri:hover{background:color-mix(in oklch,var(--accent) 88%,black)}}
+.btn.warn{border-color:var(--warn);color:var(--warn)}
+.btn.sm{padding:7px 11px;font-size:12.5px;min-height:34px}
+.btn.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:500;background:var(--sunk);color:var(--ink2)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}
+
+/* plan */
+.status{display:flex;align-items:center;gap:8px 16px;flex-wrap:wrap;margin:16px 0 2px}
+.status .big{font:400 30px/1 var(--serif);font-variant-numeric:tabular-nums}
+.status .big small{font:400 13.5px var(--sans);color:var(--muted);margin-left:7px}
+.meter{flex:1 1 120px;max-width:220px;height:5px;border-radius:99px;background:var(--sunk);overflow:hidden}
+.meter i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width 400ms var(--ease-out)}
+.start{margin:16px 0 4px;padding:18px;border-radius:var(--r);background:var(--accent-soft);color:var(--ink);display:flex;gap:14px 18px;align-items:center;flex-wrap:wrap}
+.start h2{font:400 26px/1.1 var(--serif)}
+.start p{color:var(--ink2);font-size:13.5px;margin-top:4px;max-width:58ch}
+.start>div{flex:1 1 260px;min-width:0}
+.legnav{display:flex;gap:6px;overflow-x:auto;padding:10px 0 0;scrollbar-width:none}
+.legnav::-webkit-scrollbar{display:none}
+.legnav a{flex:none;display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:999px;border:1px solid var(--line2);font-size:12.5px;font-weight:500;color:var(--ink);text-decoration:none;background:var(--raise)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--bagc,var(--muted));flex:none}
+.leg{--bagc:var(--ald);--bagsoft:var(--ald-soft)}
+.leg[data-bag="lko"]{--bagc:var(--lko);--bagsoft:var(--lko-soft)}
+.leg[data-bag="del"]{--bagc:var(--del);--bagsoft:var(--del-soft)}
+.leg-h{display:flex;align-items:center;gap:10px;margin:22px 0 10px;flex-wrap:wrap}
+.leg-h .bag{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--bagsoft);color:var(--bagc)}
+.leg-h h2{font:400 24px/1 var(--serif)}
+.leg-h .rng{color:var(--muted);font-size:12.5px}
+.leg-h .tag{margin-left:auto;padding:3px 10px;border-radius:999px;background:var(--bagsoft);color:var(--bagc);font-size:12px;font-weight:500}
+.days{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+
+.day{position:relative;display:flex;flex-direction:column;gap:9px;padding:11px 13px 12px;background:var(--surface);border:1px solid var(--line);border-radius:14px;min-width:0;transition:border-color 160ms var(--ease-out),background-color 160ms var(--ease-out),box-shadow 160ms var(--ease-out)}
+.dh{display:flex;align-items:center;gap:9px;min-width:0}
+.dn{flex:none;min-width:30px;font:400 34px/.9 var(--serif);font-variant-numeric:lining-nums;color:var(--bagc)}
+.dt{flex:1;min-width:0}
+.dt h3{font:600 14px/1.25 var(--sans)}
+.dt .hint{display:block;margin-top:1px;color:var(--muted);font-size:11.5px;line-height:1.3}
+.ib{position:relative;flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;color:var(--muted);box-shadow:inset 0 0 0 1px var(--line2);transition:background-color 160ms var(--ease-out)}
+.ib::after{content:"";position:absolute;inset:-6px}
+@media (hover:hover) and (pointer:fine){.ib:hover{background:var(--sunk)}}
+.zone{display:flex;align-items:flex-end;gap:7px;flex-wrap:wrap}
+.dm{font-size:12px;line-height:1.3;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dm.none{color:var(--muted)}
+.nrow:empty{display:none}
+.note1{display:block;width:100%;border:0;border-top:1px dashed var(--line2);background:transparent;color:var(--ink);padding:7px 0 0;font:inherit;font-size:12.5px}
+.note1::placeholder{color:var(--muted)}
+.day.over{border-color:var(--accent);background:var(--accent-soft)}
+.selecting .day{border-style:dashed;border-color:var(--accent);cursor:copy}
+.day.tgt{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+
+.pc{width:66px;margin:0;position:relative;cursor:grab}
+.pc .im{position:relative;aspect-ratio:3/4;border-radius:9px;overflow:hidden;background:var(--sunk);cursor:pointer}
+.pc img{width:100%;height:100%;object-fit:cover}
+.x{position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:rgba(18,14,14,.66);color:#fff;display:grid;place-items:center}
+.x::after{content:"";position:absolute;inset:-7px}
+.loc{position:absolute;left:4px;bottom:4px;padding:3px 6px;border-radius:999px;font:600 9px/1 var(--sans);letter-spacing:.02em;background:var(--ald-soft);color:var(--ald)}
+.loc.D{background:var(--del-soft);color:var(--del)}
+.loc.q{background:var(--raise);color:var(--muted);box-shadow:inset 0 0 0 1px var(--line2)}
+.addt{position:relative;display:grid;place-items:center;align-content:center;gap:3px;border:1.5px dashed var(--line2);border-radius:9px;color:var(--muted);font-size:10.5px;font-weight:500;transition:border-color 160ms var(--ease-out),color 160ms var(--ease-out),background-color 160ms var(--ease-out),transform 160ms var(--ease-out)}
+.addt.big{width:66px;aspect-ratio:3/4}
+.addt.round{width:28px;height:28px;border-radius:50%;margin-bottom:3px}
+.addt.round::after{content:"";position:absolute;inset:-8px}
+@media (hover:hover) and (pointer:fine){.addt:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}}
+.addt:active{transform:scale(.97)}
+.selecting .addt{border-color:var(--accent);color:var(--accent)}
+.noimg{width:100%;height:100%;display:grid;place-items:center;color:var(--muted);font-size:10px;text-align:center;padding:4px}
+
+/* closet */
+.closet{position:sticky;top:calc(env(safe-area-inset-top,0px) + 84px);max-height:calc(100dvh - 104px);display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;min-width:0}
+.cl-h{display:flex;align-items:center;gap:10px;padding:14px 14px 4px 16px}
+.cl-h h2{font:400 26px/1 var(--serif);flex:1}
+.cl-h small{font:400 12.5px var(--sans);color:var(--muted);margin-left:6px}
+.cl-x{display:none}
+.cl-note{margin:10px 14px 0;padding:10px 12px;border-radius:10px;background:var(--sunk);color:var(--ink2);font-size:12.5px}
+.cl-note.tgt{background:var(--accent-soft);color:var(--accent);font-weight:500}
+.cl-tools{display:flex;gap:6px;flex-wrap:wrap;padding:10px 14px}
+.cl-tools input{flex:1 1 120px;min-width:0;border:1px solid var(--line2);background:var(--raise);color:var(--ink);border-radius:999px;padding:8px 14px;font:inherit;font-size:13px;min-height:36px}
+.chip{padding:7px 12px;border-radius:999px;border:1px solid var(--line2);font-size:12.5px;font-weight:500;background:var(--raise);color:var(--ink2);min-height:34px}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.cgrid{overflow:auto;padding:4px 14px 16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:12px;align-content:start;grid-auto-rows:max-content;overscroll-behavior:contain}
+.cc{position:relative;cursor:pointer;min-width:0}
+.cc .im{position:relative;aspect-ratio:3/4;border-radius:11px;overflow:hidden;background:var(--sunk);outline:2px solid transparent;outline-offset:2px;transition:outline-color 160ms var(--ease-out)}
+.cc img{width:100%;height:100%;object-fit:cover;transition:opacity 160ms var(--ease-out)}
+.cc.sel .im{outline-color:var(--accent)}
+.cc.used img{opacity:.45}
+.cc .nm{margin-top:6px;font-size:11.5px;line-height:1.3;color:var(--ink2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cc .on{position:absolute;right:6px;bottom:6px;padding:3px 8px;border-radius:999px;background:var(--ink);color:var(--bg);font:600 10px/1 var(--sans);font-variant-numeric:tabular-nums}
+.cc .zm{position:absolute;right:6px;top:6px;width:26px;height:26px;border-radius:50%;background:rgba(18,14,14,.6);color:#fff;display:grid;place-items:center}
+.cc .zm::after{content:"";position:absolute;inset:-7px}
+.cc .loc{position:static;display:inline-block;margin-top:5px}
+.cempty{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:26px 10px;color:var(--muted);font-size:13px}
+.cempty b{display:block;font:400 22px/1.15 var(--serif);color:var(--ink)}
+.busy{grid-column:1/-1;padding:10px 12px;border-radius:10px;background:var(--accent-soft);color:var(--accent);font-size:12.5px;font-weight:500}
+.fab,.placing{display:none}
+
+/* packing */
+.pk-h{margin:28px 0 6px}
+.pk-h h2{font:400 34px/1 var(--serif)}
+.pk-h p{margin-top:8px;color:var(--muted);max-width:60ch}
+.bags{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:18px;margin-top:22px}
+.bagc{--bagc:var(--ald);--bagsoft:var(--ald-soft);background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;min-width:0}
+.bagc[data-bag="lko"]{--bagc:var(--lko);--bagsoft:var(--lko-soft)}
+.bagc[data-bag="del"]{--bagc:var(--del);--bagsoft:var(--del-soft)}
+.bagc header{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.bagc header .bag{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--bagsoft);color:var(--bagc)}
+.bagc h3{font:400 26px/1 var(--serif)}
+.bagc header p{color:var(--muted);font-size:12.5px;margin-top:3px}
+.bagc h4{font:600 10.5px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:18px 0 4px}
+.rw{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.rw:last-child{border-bottom:0}
+.rw .th{width:46px;height:60px;border-radius:8px;overflow:hidden;flex:none;background:var(--sunk)}
+.rw .th img{width:100%;height:100%;object-fit:cover}
+.rw .t{flex:1;min-width:0;font-size:13.5px}
+.rw .t small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.rw .st{flex:none}
+.empty-line{color:var(--muted);font-size:13px;padding:10px 0}
+.daylist{margin-top:34px}
+.daylist h3{font:400 28px/1 var(--serif);margin-bottom:6px}
+.dl{display:grid;grid-template-columns:56px minmax(0,1fr);gap:14px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.dl b{font:400 30px/1 var(--serif)}
+.dl .t{font-size:13.5px;min-width:0}
+.dl .t small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.data{margin-top:40px;padding:18px;border:1px dashed var(--line2);border-radius:var(--r);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.data p{flex:1 1 280px;color:var(--muted);font-size:13px}
+
+/* lightbox + dialogs */
+.ov{position:fixed;inset:0;z-index:80;background:rgba(10,8,9,.8);display:flex;align-items:center;justify-content:center;padding:max(14px,env(safe-area-inset-top,0px)) max(14px,env(safe-area-inset-right,0px)) max(14px,env(safe-area-inset-bottom,0px)) max(14px,env(safe-area-inset-left,0px));animation:fade 200ms var(--ease-out)}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.lbc{display:grid;grid-template-columns:minmax(0,1fr) 340px;width:min(1080px,100%);max-height:calc(100dvh - 28px);background:var(--surface);border-radius:20px;overflow:hidden;box-shadow:var(--shadow);animation:rise 240ms var(--ease-out)}
+@keyframes rise{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:none}}
+.lbi{position:relative;background:var(--sunk);display:flex;align-items:center;justify-content:center;min-height:0;min-width:0}
+.lbi img{max-height:calc(100dvh - 28px);width:auto;max-width:100%;object-fit:contain}
+.lbp{padding:22px;overflow:auto;display:flex;flex-direction:column;gap:14px;min-width:0}
+.lbp h3{font:400 30px/1.05 var(--serif)}
+.lbp .sub{color:var(--muted);font-size:13px;margin-top:-6px}
+.lbp label{font:600 10.5px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.lbp input[type=text],.lbp select{width:100%;margin-top:8px;border:1px solid var(--line2);background:var(--raise);color:var(--ink);border-radius:10px;padding:10px 12px;font:inherit}
+.lbp .row{display:flex;gap:8px;flex-wrap:wrap}
+.close{position:absolute;top:10px;right:10px;width:40px;height:40px;border-radius:50%;background:rgba(18,14,14,.62);color:#fff;display:grid;place-items:center;z-index:2}
+.dlg{width:min(560px,100%);background:var(--surface);border-radius:20px;box-shadow:var(--shadow);padding:22px;display:flex;flex-direction:column;gap:14px;max-height:calc(100dvh - 28px);overflow:auto;animation:rise 240ms var(--ease-out)}
+.dlg h3{font:400 30px/1 var(--serif)}
+.dlg p{color:var(--muted);font-size:13.5px}
+.dlg textarea{width:100%;min-height:200px;border:1px solid var(--line2);border-radius:12px;background:var(--raise);color:var(--ink);padding:12px;font:12.5px/1.45 ui-monospace,Consolas,monospace;resize:vertical}
+.dlg .row{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translate(-50%,10px);max-width:min(92vw,520px);background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:999px;font-size:13.5px;font-weight:500;opacity:0;pointer-events:none;transition:opacity 200ms var(--ease-out),transform 200ms var(--ease-out);z-index:95;text-align:center}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* tablet and phone: closet becomes a sheet */
+@media (max-width:1060px){
+  .shell{grid-template-columns:minmax(0,1fr)}
+  .closet{position:fixed;left:0;right:0;bottom:0;top:auto;max-height:none;height:min(76dvh,680px);z-index:70;border-radius:20px 20px 0 0;border-width:1px 0 0;transform:translateY(106%);transition:transform 280ms var(--ease-out),visibility 0s linear 280ms;padding-bottom:env(safe-area-inset-bottom,0px);box-shadow:var(--shadow);visibility:hidden}
+  .closet.open{transform:none;visibility:visible;transition:transform 280ms var(--ease-out),visibility 0s}
+  .cl-x{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--sunk)}
+  .fab{display:inline-flex;position:fixed;z-index:50;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));padding:14px 20px;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-weight:600;align-items:center;gap:9px;box-shadow:var(--shadow);transition:transform 160ms var(--ease-out)}
+  .fab:active{transform:scale(.96)}
+  .placing{display:flex;position:fixed;z-index:55;left:max(14px,env(safe-area-inset-left,0px));right:max(14px,env(safe-area-inset-right,0px));bottom:calc(14px + env(safe-area-inset-bottom,0px));align-items:center;gap:12px;padding:10px 10px 10px 12px;border-radius:18px;background:var(--ink);color:var(--bg);box-shadow:var(--shadow);visibility:hidden;transform:translateY(calc(100% + 40px));transition:transform 260ms var(--ease-out),visibility 0s linear 260ms}
+  .placing.on{visibility:visible;transform:none;transition:transform 260ms var(--ease-out),visibility 0s}
+  .placing .th{width:40px;height:52px;border-radius:7px;overflow:hidden;flex:none}
+  .placing .th img{width:100%;height:100%;object-fit:cover}
+  .placing .t{flex:1;min-width:0;font-size:13px}
+  .placing .t b{display:block;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .placing button{padding:10px 14px;border-radius:999px;background:rgba(255,255,255,.16);font-weight:600;font-size:13px}
+  body.selecting .fab,body.targeting .fab{display:none}
+}
+@media (max-width:760px){
+  .lbc{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,auto) minmax(0,1fr);overflow:auto}
+  .lbi img{max-height:52dvh}
+  .top .wrap{padding-block:8px 9px;gap:6px}
+  .brand h1{font-size:24px}
+  .brand p{display:none}
+  .seg{margin-left:0;width:100%}
+  .seg button{flex:1;padding:9px 6px;text-align:center}
+  .days{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .day{padding:9px 9px 10px;gap:7px;border-radius:12px}
+  .dh{gap:4px 7px}
+  .dn{font-size:28px;min-width:22px}
+  .dt h3{font-size:13px}
+  .dt .hint{display:none}
+  .ib{position:absolute;right:8px;bottom:8px;z-index:1}
+  .dm{padding-right:30px}
+  .pc{width:58px}.addt.big{width:58px}
+  .meter{display:none}
+  .leg-h{margin:18px 0 8px}
+  .leg-h .tag{display:none}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="brand"><h1>Groom wardrobe</h1><p id="sub">18 – 29 · Allahabad, Lucknow, Delhi</p></div>
+    <nav class="seg" role="tablist" aria-label="Views">
+      <button role="tab" data-view="plan" aria-selected="true">Plan</button>
+      <button role="tab" data-view="pack" aria-selected="false">Packing</button>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="shell" id="shell">
+    <main id="main"></main>
+    <aside class="closet" id="closet" aria-label="Closet">
+      <div class="cl-h"><h2>Closet<small id="clCount"></small></h2><button class="btn sm pri" id="addBtn" data-act="addphotos"></button><button class="cl-x" id="clX" aria-label="Close closet"></button></div>
+      <p class="cl-note" id="clNote"></p>
+      <div class="cl-tools">
+        <input id="q" type="search" placeholder="Search by name" aria-label="Search the closet">
+        <button class="chip" id="fFree" aria-pressed="false">Not placed</button>
+      </div>
+      <div class="cgrid" id="cgrid"></div>
+    </aside>
+  </div>
+</div>
+<button class="fab" id="fab"></button>
+<div class="placing" id="placing"></div>
+<input type="file" id="fileIn" accept="image/*" multiple class="sr" aria-label="Choose outfit photos">
+<input type="file" id="backupIn" accept="application/json,.json" class="sr" aria-label="Choose a backup file">
+<div id="layer"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ---------------- icons ---------------- */
+const IC={
+ x:'<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+ plus:'<path d="M5 12h14"/><path d="M12 5v14"/>',
+ zoom:'<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6"/><path d="M8 11h6"/>',
+ shirt:'<path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/>',
+ bag:'<rect width="18" height="13" x="3" y="8" rx="2"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 13h18"/>',
+ camera:'<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/>',
+ edit:'<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
+ copy:'<rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',
+ down:'<path d="M12 15V3"/><path d="m7 10 5 5 5-5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>',
+ up:'<path d="M12 3v12"/><path d="m17 8-5-5-5 5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>'
+};
+const ic=(n,s=18)=>`<svg class="ic" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]||''}</svg>`;
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+
+/* ---------------- occasions (same week as the bride's board) ---------------- */
+const LEGS=[
+ {bag:"ald",title:"Allahabad",range:"18 – 19",sub:"before Lucknow",tag:"Allahabad bag",slots:[
+   {id:"18a",d:18,day:"Haldi, tel, mehendi"},{id:"18b",d:18,day:"Evening cocktails"},{id:"19a",d:19,day:"Misc day wear"}]},
+ {bag:"lko",title:"Lucknow",range:"20 – 22 morning",sub:"travel on the 20th",tag:"Lucknow small bag",slots:[
+   {id:"20a",d:20,day:"Travel + baraat",hint:"worn on the way to Lucknow"},{id:"20b",d:20,day:"Evening cocktail"},
+   {id:"21a",d:21,day:"Morning wear"},{id:"21b",d:21,day:"Bhaat"},{id:"21c",d:21,day:"Wedding"},
+   {id:"22a",d:22,day:"Morning travel wear",hint:"Lucknow to Allahabad, packs in the Lucknow bag"}]},
+ {bag:"ald",title:"Allahabad",range:"22 – 25 morning",sub:"back from Lucknow",tag:"Allahabad bag",slots:[
+   {id:"22b",d:22,day:"Muh dikhaai"},{id:"23a",d:23,day:"Day wear"},{id:"23b",d:23,day:"Wedding + reception"},
+   {id:"24a",d:24,day:"Wedding anniversary"},{id:"25a",d:25,day:"Morning + Allahabad to Delhi flight",hint:"travel wear, packs in the Allahabad bag"}]},
+ {bag:"del",title:"Delhi",range:"25 – 29",sub:"stays at home",tag:"Stays in Delhi",slots:[
+   {id:"26a",d:26,day:"Muskan & Hanzala's wedding functions"},{id:"27a",d:27,day:"Day wear"},{id:"28a",d:28,day:"Day wear"},
+   {id:"28b",d:28,day:"Delhi reception"},{id:"29a",d:29,day:"Day wear"}]}
+];
+const SLOTS=LEGS.flatMap(l=>l.slots.map(s=>({...s,bag:l.bag})));
+const slotBy=id=>SLOTS.find(s=>s.id===id);
+const BAGNAME={lko:"Lucknow small bag",ald:"Allahabad bag",del:"Delhi, stays home"};
+const LOC={A:"Allahabad",D:"Delhi"}, LOCS={A:"Alld",D:"Delhi"};
+const TYPES=["Sherwani","Kurta set","Bandhgala / Jodhpuri","Suit","Indo-western","Shirt and trousers","Casual","Other"];
+
+/* ---------------- state (this browser only) ---------------- */
+const KEY="groom-board-v1", VKEY="groom-board-view";
+let state={items:[],slots:{},loc:{},notes:{},nextId:1};
+try{const s=JSON.parse(localStorage.getItem(KEY)); if(s&&s.slots) state=Object.assign(state,s);}catch(e){}
+let byId={}; function index(){byId=Object.fromEntries(state.items.map(i=>[i.id,i])); for(const k in state.slots) state.slots[k]=(state.slots[k]||[]).filter(id=>byId[id]);}
+index();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){toast("This browser would not save. Leave private browsing and try again.");}}
+const nameOf=i=>i.name||"Outfit";
+const slotsOf=id=>SLOTS.filter(s=>(state.slots[s.id]||[]).includes(id));
+const dayLabel=s=>`${s.d} ${s.day}`;
+
+/* photos in IndexedDB */
+const URLS={};
+let dbp=null;
+function db(){ if(dbp) return dbp; dbp=new Promise((res,rej)=>{ if(!window.indexedDB) return rej(new Error("no idb")); const r=indexedDB.open("groom-wardrobe",1); r.onupgradeneeded=()=>r.result.createObjectStore("photos"); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); return dbp; }
+async function idb(mode,fn){ const d=await db(); return new Promise((res,rej)=>{ const tx=d.transaction("photos",mode), st=tx.objectStore("photos"); let out; const r=fn(st); if(r) r.onsuccess=()=>{out=r.result;}; tx.oncomplete=()=>res(out); tx.onerror=()=>rej(tx.error); tx.onabort=()=>rej(tx.error); }); }
+const putPhoto=(id,blob)=>idb("readwrite",st=>st.put(blob,id));
+const getPhoto=id=>idb("readonly",st=>st.get(id));
+const delPhoto=id=>idb("readwrite",st=>st.delete(id));
+async function loadPhotos(){ for(const it of state.items){ try{ const b=await getPhoto(it.id); if(b){ URLS[it.id]=URL.createObjectURL(b);} }catch(e){} } }
+const imgTag=(it,alt)=>URLS[it.id]?`<img src="${URLS[it.id]}" alt="${esc(alt||"")}" draggable="false">`:`<div class="noimg">No photo on this device</div>`;
+
+/* ui state */
+let view="plan", selected=null, target=null, fFree=false, q="", sheetOpen=false, busy="";
+try{const v=localStorage.getItem(VKEY); if(v==="plan"||v==="pack") view=v;}catch(e){}
+{const h=(location.hash||"").replace("#",""); if(h==="plan") view="plan"; if(h==="packing"||h==="pack") view="pack";}
+const sheetMode=matchMedia("(max-width:1060px)");
+let tt; function toast(m){const t=$("#toast"); t.textContent=m; t.classList.add("on"); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove("on"),2800);}
+
+/* ---------------- plan view ---------------- */
+function stats(){
+  const dressed=SLOTS.filter(s=>(state.slots[s.id]||[]).length).length;
+  let carry=0, back=0, unknown=0; const seen=new Set();
+  for(const s of SLOTS) for(const id of (state.slots[s.id]||[])){ if(seen.has(id+s.bag)) continue; seen.add(id+s.bag);
+    const l=state.loc[id]; if(!l){unknown++; continue;} if(s.bag==="del"){ if(l==="A") back++; } else if(l==="D") carry++; }
+  return {dressed,total:SLOTS.length,carry,back,unknown};
+}
+function pc(id,slotId){
+  const it=byId[id], nm=nameOf(it), l=state.loc[id];
+  return `<figure class="pc" draggable="true" data-id="${id}" data-from="${slotId}" title="${esc(nm)}">
+    <div class="im" data-act="open" data-id="${id}" role="button" tabindex="0" aria-label="Open ${esc(nm)}">${imgTag(it,nm)}
+      <button class="loc ${l||'q'}" data-act="loc" data-id="${id}" aria-label="Where is it now? ${l?LOC[l]:'not set'}. Tap to change">${l?LOCS[l]:"?"}</button>
+      <button class="x" data-act="remove" data-id="${id}" data-slot="${slotId}" aria-label="Remove ${esc(nm)} from this day">${ic("x",12)}</button></div></figure>`;
+}
+function addTile(slotId,empty){
+  const lab=`Add an outfit to ${dayLabel(slotBy(slotId))}`;
+  return empty?`<button class="addt big" data-act="addto" data-slot="${slotId}" aria-label="${lab}">${ic("plus",16)}<span>Outfit</span></button>`
+    :`<button class="addt round" data-act="addto" data-slot="${slotId}" aria-label="${lab}">${ic("plus",14)}</button>`;
+}
+const noteInput=(slot,val)=>`<input class="note1" type="text" id="note-${slot}" data-note="${slot}" value="${esc(val)}" placeholder="Note: safa, juttis, stole, brooch" aria-label="Note for ${esc(slotBy(slot).day)}">`;
+function dayHTML(s){
+  const ids=state.slots[s.id]||[], tg=target&&target.slot===s.id, hasNote=!!state.notes[s.id];
+  return `<article class="day ${tg?"tgt":""}" data-slot="${s.id}">
+    <div class="dh"><b class="dn">${s.d}</b><div class="dt" ${s.hint?`title="${esc(s.hint)}"`:""}><h3>${esc(s.day)}</h3>${s.hint?`<span class="hint">${esc(s.hint)}</span>`:""}</div>
+      <button class="ib" data-act="note" data-slot="${s.id}" aria-label="Add a note" ${hasNote?"hidden":""}>${ic("edit",13)}</button></div>
+    <div class="zone">${ids.map(i=>pc(i,s.id)).join("")}${addTile(s.id,!ids.length)}</div>
+    <div class="dm ${ids.length?"":"none"}">${ids.length?esc(ids.map(i=>nameOf(byId[i])).join(" · ")):"No outfit yet"}</div>
+    <div class="nrow">${hasNote?noteInput(s.id,state.notes[s.id]):""}</div>
+  </article>`;
+}
+function renderPlan(){
+  const st=stats();
+  let h="";
+  if(!state.items.length) h+=`<section class="start"><div><h2>Start with photos of his outfits</h2><p>Add photos from this phone or laptop. Each photo becomes a piece in the closet, then tap the + on a day to place it. Photos stay on this device only.</p></div><button class="btn pri" data-act="addphotos">${ic("camera",16)}Add photos</button></section>`;
+  h+=`<div class="status"><div class="big">${st.dressed}<small>of ${st.total} occasions planned</small></div><div class="meter" role="img" aria-label="${st.dressed} of ${st.total} planned"><i style="width:${Math.round(100*st.dressed/st.total)}%"></i></div>
+    ${st.carry?`<span class="pill warn">${st.carry} to carry to Allahabad</span>`:""}${st.back?`<span class="pill warn">${st.back} to bring back to Delhi</span>`:""}${st.unknown?`<span class="pill">${st.unknown} without a city</span>`:""}</div>
+    <nav class="legnav" aria-label="Jump to a leg">${LEGS.map((l,i)=>`<a href="#leg-${i}" data-act="jump" data-leg="${i}"><i class="dot" style="--bagc:var(--${l.bag})"></i>${l.title} ${l.range}</a>`).join("")}</nav>`;
+  LEGS.forEach((l,i)=>{
+    h+=`<section class="leg" id="leg-${i}" data-bag="${l.bag}"><div class="leg-h"><span class="bag">${ic("bag",16)}</span><h2>${l.title}</h2><span class="rng">${l.range} · ${l.sub}</span><span class="tag">${l.tag}</span></div>
+      <div class="days">${l.slots.map(s=>dayHTML({...s,bag:l.bag})).join("")}</div></section>`;
+  });
+  return h;
+}
+
+/* ---------------- packing view ---------------- */
+function bagModel(){
+  const bags={lko:[],ald:[],del:[]};
+  for(const s of SLOTS) for(const id of (state.slots[s.id]||[])){
+    let r=bags[s.bag].find(x=>x.id===id); if(!r){r={id,occ:[]}; bags[s.bag].push(r);} r.occ.push(dayLabel(s));
+  }
+  return bags;
+}
+function flag(id,bag){
+  const l=state.loc[id]; if(!l) return `<span class="pill warn">Mark where it is</span>`;
+  if(bag==="del") return l==="D"?`<span class="pill ok">Already in Delhi</span>`:`<span class="pill warn">In Allahabad: bring back</span>`;
+  return l==="A"?`<span class="pill ok">Already in Allahabad</span>`:`<span class="pill warn">In Delhi: carry here</span>`;
+}
+function renderPack(){
+  const bags=bagModel(), st=stats();
+  const sec=(bag,sub)=>{const rows=bags[bag];
+    const row=r=>`<div class="rw"><div class="th">${imgTag(byId[r.id],"")}</div><div class="t">${esc(nameOf(byId[r.id]))}<small>${r.occ.map(esc).join(" · ")}</small></div><div class="st">${flag(r.id,bag)}</div></div>`;
+    return `<section class="bagc" data-bag="${bag}"><header><span class="bag">${ic("bag",20)}</span><div><h3>${BAGNAME[bag]}</h3><p>${sub}</p></div></header>
+      <h4>Outfits · ${rows.length}</h4>${rows.length?rows.map(row).join(""):'<p class="empty-line">Nothing placed yet.</p>'}</section>`;};
+  const dl=SLOTS.map(s=>{const ids=state.slots[s.id]||[];
+    return `<div class="dl"><b>${s.d}</b><div class="t"><b style="font:600 14px var(--sans)">${esc(s.day)}</b><small>${ids.length?ids.map(i=>esc(nameOf(byId[i]))).join(" · "):"Nothing yet"}${state.notes[s.id]?" · "+esc(state.notes[s.id]):""}</small></div></div>`;}).join("");
+  const away=st.carry+st.back;
+  return `<div class="pk-h"><h2>Packing</h2><p>What goes in which bag, built from the plan. ${away?`<b>${away}</b> ${away===1?"outfit is":"outfits are"} in the other city.`:"Every outfit with a city marked is already where it needs to be."}${st.unknown?` ${st.unknown} still ${st.unknown===1?"needs":"need"} a city: tap the ? on the photo.`:""}</p></div>
+    <div class="bags">${sec("lko","20th travel to 22nd morning")}${sec("ald","18–19 and 22–25 morning")}${sec("del","25th onwards")}</div>
+    <section class="daylist"><h3>Day by day</h3>${dl}</section>
+    <section class="data"><p>The plan and photos are saved in this browser on this device. Save a backup file now and then, and use it to move everything to another phone.</p>
+      <button class="btn pri" data-act="copyText">${ic("copy",15)}Copy plan as text</button><button class="btn" data-act="exportFile">${ic("down",15)}Save backup file</button><button class="btn" data-act="importFile">${ic("up",15)}Load backup file</button><button class="btn warn" id="clearBtn" data-act="clear">Clear placements</button></section>`;
+}
+
+/* ---------------- closet ---------------- */
+function renderCloset(){
+  $("#clCount").textContent=state.items.length?` ${state.items.length}`:"";
+  $("#addBtn").innerHTML=`${ic("camera",15)}Add photos`;
+  $("#clNote").classList.toggle("tgt",!!target);
+  $("#clNote").textContent= target?`Choose an outfit for ${dayLabel(slotBy(target.slot))}, or add a new photo.`
+    : state.items.length?"Tap an outfit, then tap a day. The orange or blue tag says which city it is in now: tap it to change.":"No outfits yet. Add photos to start.";
+  $("#fFree").setAttribute("aria-pressed",fFree);
+  const list=state.items.map((it,n)=>({it,n,used:slotsOf(it.id)}))
+    .filter(({it,used})=>!(fFree&&used.length)&&(!q||nameOf(it).toLowerCase().includes(q)||(it.type||"").toLowerCase().includes(q)))
+    .sort((a,b)=>(a.used.length?1:0)-(b.used.length?1:0)||b.n-a.n);
+  let h=busy?`<p class="busy">${esc(busy)}</p>`:"";
+  if(!state.items.length) h+=`<div class="cempty"><b>The closet is empty</b>Add photos of his outfits from this device. You can choose several at once.<button class="btn pri" data-act="addphotos">${ic("camera",16)}Add photos</button></div>`;
+  else h+=list.map(({it,used})=>`<div class="cc ${selected===it.id?'sel':''} ${used.length?'used':''}" draggable="true" data-id="${it.id}" data-act="pick" role="button" tabindex="0" aria-pressed="${selected===it.id}" aria-label="${esc(nameOf(it))}${used.length?', on '+used.map(s=>s.d).join(' and '):''}">
+      <div class="im">${imgTag(it,"")}<button class="zm" data-act="open" data-id="${it.id}" aria-label="Open ${esc(nameOf(it))}">${ic("zoom",14)}</button>
+        ${used.length?`<span class="on">on ${used.map(s=>s.d).join(", ")}</span>`:""}</div>
+      <div class="nm">${esc(nameOf(it))}${it.type?` · ${esc(it.type)}`:""}</div><button class="loc ${state.loc[it.id]||'q'}" data-act="loc" data-id="${it.id}">${state.loc[it.id]?LOC[state.loc[it.id]]:"Which city?"}</button></div>`).join("")
+    ||`<p class="empty-line" style="grid-column:1/-1">Nothing matches.</p>`;
+  $("#cgrid").innerHTML=h;
+}
+
+/* ---------------- shell ---------------- */
+function renderAll(){
+  $$(".seg button").forEach(b=>b.setAttribute("aria-selected",b.dataset.view===view));
+  const st=stats();
+  $("#shell").classList.toggle("single",view!=="plan");
+  $("#closet").hidden=view!=="plan";
+  $("#main").innerHTML= view==="plan"?renderPlan():renderPack();
+  $("#sub").textContent= view==="plan"?`18 – 29 · ${st.dressed} of ${st.total} occasions planned`:"Bags for Lucknow, Allahabad and Delhi";
+  $("#fab").innerHTML=`${ic("shirt",18)}Closet`;
+  $("#fab").hidden=view!=="plan";
+  $("#clX").innerHTML=ic("x",18);
+  renderCloset(); renderPlacing();
+  document.body.classList.toggle("selecting",!!selected&&view==="plan");
+  document.body.classList.toggle("targeting",!!target&&view==="plan");
+}
+function renderPlacing(){
+  const p=$("#placing");
+  if(target&&!selected){ p.innerHTML=`<div class="t"><b>${esc(dayLabel(slotBy(target.slot)))}</b>Pick an outfit from the closet</div><button data-act="cancel">Cancel</button>`; p.classList.add("on"); return; }
+  if(!selected){p.classList.remove("on"); return;}
+  const it=byId[selected]; p.innerHTML=`<div class="th">${imgTag(it,"")}</div><div class="t"><b>${esc(nameOf(it))}</b>Tap a day to place it</div><button data-act="cancel">Cancel</button>`; p.classList.add("on");
+}
+
+/* ---------------- actions ---------------- */
+function setView(v){view=v; try{localStorage.setItem(VKEY,v);}catch(e){} selected=null; target=null; sheetOpen=false; $("#closet").classList.remove("open"); renderAll(); window.scrollTo({top:0});}
+function place(id,slotId){
+  const arr=state.slots[slotId]||(state.slots[slotId]=[]);
+  if(arr.includes(id)){toast("Already on that occasion"); selected=null; renderAll(); return;}
+  arr.push(id); save(); selected=null; target=null; renderAll(); toast(`${nameOf(byId[id])} on ${dayLabel(slotBy(slotId))}`);
+}
+function removeFrom(id,slotId){state.slots[slotId]=(state.slots[slotId]||[]).filter(x=>x!==id); save(); renderAll();}
+function cycleLoc(id){const c=state.loc[id]; state.loc[id]=c==="A"?"D":"A"; save(); renderAll(); if($("#lbc")) paintItem();}
+function closeSheet(){ sheetOpen=false; $("#closet").classList.remove("open"); }
+function pick(id){
+  if(target){ const sl=target.slot; target=null; closeSheet(); place(id,sl); return; }
+  selected=selected===id?null:id; renderAll();
+  if(selected&&sheetMode.matches) closeSheet();
+}
+function setSheet(o){sheetOpen=o; $("#closet").classList.toggle("open",o); if(!o&&target){target=null; renderAll();} if(o){selected=null; renderAll(); $("#closet").classList.add("open");}}
+
+/* adding photos: resize in the browser, keep in IndexedDB */
+function shrink(file){
+  return new Promise((res,rej)=>{
+    const url=URL.createObjectURL(file), im=new Image();
+    im.onload=()=>{ const max=1280, s=Math.min(1,max/Math.max(im.naturalWidth,im.naturalHeight));
+      const c=document.createElement("canvas"); c.width=Math.round(im.naturalWidth*s); c.height=Math.round(im.naturalHeight*s);
+      c.getContext("2d").drawImage(im,0,0,c.width,c.height); URL.revokeObjectURL(url);
+      c.toBlob(b=>b?res(b):rej(new Error("encode")),"image/jpeg",.86); };
+    im.onerror=()=>{URL.revokeObjectURL(url); rej(new Error("decode"));};
+    im.src=url;
+  });
+}
+async function addFiles(files){
+  files=[...files].filter(f=>/^image\//.test(f.type)||/\.(jpe?g|png|heic|webp)$/i.test(f.name)); if(!files.length) return;
+  const tg=target; let added=[], failed=0;
+  try{ if(navigator.storage&&navigator.storage.persist) navigator.storage.persist(); }catch(e){}
+  for(let i=0;i<files.length;i++){
+    busy=`Adding photo ${i+1} of ${files.length}…`; renderCloset();
+    try{
+      const blob=await shrink(files[i]); const id="g"+(state.nextId++);
+      await putPhoto(id,blob); URLS[id]=URL.createObjectURL(blob);
+      state.items.push({id,name:"Outfit "+id.slice(1),type:"",added:Date.now()}); added.push(id);
+    }catch(e){ failed++; }
+  }
+  busy=""; index(); save();
+  if(tg&&added.length===1){ target=null; closeSheet(); place(added[0],tg.slot); }
+  else renderAll();
+  if(failed) toast(`${added.length} added. ${failed} could not be read: try a JPEG or PNG.`);
+  else if(!(tg&&added.length===1)) toast(`${added.length} ${added.length===1?"photo":"photos"} added. Tap one to name it.`);
+}
+async function deleteItem(id){
+  for(const k in state.slots) state.slots[k]=(state.slots[k]||[]).filter(x=>x!==id);
+  state.items=state.items.filter(i=>i.id!==id); delete state.loc[id]; index(); save();
+  try{ await delPhoto(id);}catch(e){} if(URLS[id]){URL.revokeObjectURL(URLS[id]); delete URLS[id];}
+  closeLayer(); renderAll(); toast("Photo deleted");
+}
+
+/* text, backup file */
+function summaryText(){
+  const bags=bagModel(); let out="GROOM WARDROBE PLAN\n";
+  const tag=id=>state.loc[id]?` [in ${LOC[state.loc[id]]}]`:" [city?]";
+  for(const bag of ["lko","ald","del"]){ out+=`\n${BAGNAME[bag].toUpperCase()}\n`; if(!bags[bag].length) out+="  (nothing yet)\n";
+    for(const r of bags[bag]) out+=`  - ${nameOf(byId[r.id])}${tag(r.id)}: ${r.occ.join(", ")}\n`; }
+  out+="\nDAY BY DAY\n";
+  for(const s of SLOTS){const ids=state.slots[s.id]||[]; out+=`${dayLabel(s)}: ${ids.length?ids.map(i=>nameOf(byId[i])).join(", "):"-"}${state.notes[s.id]?" | "+state.notes[s.id]:""}\n`;}
+  return out;
+}
+async function copyText(text){
+  try{ await navigator.clipboard.writeText(text); toast("Copied. Paste it into WhatsApp or Notes."); }
+  catch(e){ openLayer(`<div class="dlg" role="dialog" aria-label="Copy the plan"><h3>Copy the plan</h3><p>Select the text below and copy it.</p><textarea id="tdx" readonly>${esc(text)}</textarea><div class="row"><button class="btn" data-act="closeLayer">Close</button></div></div>`); setTimeout(()=>{const t=$("#tdx"); if(t){t.focus(); t.select();}},50); }
+}
+const toDataURL=b=>new Promise((res,rej)=>{const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(b);});
+async function exportFile(){
+  toast("Preparing the backup…");
+  const photos={};
+  for(const it of state.items){ try{ const b=await getPhoto(it.id); if(b) photos[it.id]=await toDataURL(b);}catch(e){} }
+  const data=JSON.stringify({app:"groom-wardrobe",version:1,saved:new Date().toISOString(),state,photos});
+  const blob=new Blob([data],{type:"application/json"}), name=`groom-wardrobe-backup-${new Date().toISOString().slice(0,10)}.json`;
+  const file=new File([blob],name,{type:"application/json"});
+  try{ if(navigator.canShare&&navigator.canShare({files:[file]})&&sheetMode.matches){ await navigator.share({files:[file],title:"Groom wardrobe backup"}); return; } }catch(e){ if(e&&e.name==="AbortError") return; }
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),5000);
+  toast("Backup saved to your downloads");
+}
+async function importFile(f){
+  try{
+    const d=JSON.parse(await f.text()); if(!d||d.app!=="groom-wardrobe"||!d.state) throw new Error("bad");
+    const s=Object.assign({items:[],slots:{},loc:{},notes:{},nextId:1},d.state);
+    for(const id in (d.photos||{})){ const b=await (await fetch(d.photos[id])).blob(); await putPhoto(id,b); if(URLS[id]) URL.revokeObjectURL(URLS[id]); URLS[id]=URL.createObjectURL(b); }
+    state=s; index(); save(); renderAll(); toast(`Loaded ${state.items.length} outfits and the plan`);
+  }catch(e){ toast("That file is not a groom wardrobe backup."); }
+}
+
+/* layer */
+let lbItem=null, delArm=null;
+function openLayer(html){ $("#layer").innerHTML=`<div class="ov" data-act="ovbg">${html}</div>`; document.body.style.overflow="hidden"; }
+function closeLayer(){ $("#layer").innerHTML=""; document.body.style.overflow=""; lbItem=null; }
+function openItem(id){ lbItem=id; openLayer(`<div class="lbc" id="lbc"></div>`); paintItem(); }
+function paintItem(){
+  const box=$("#lbc"); if(!box||!byId[lbItem]) return;
+  const it=byId[lbItem], nm=nameOf(it), used=slotsOf(it.id), l=state.loc[it.id];
+  box.innerHTML=`<div class="lbi"><button class="close" data-act="closeLayer" aria-label="Close">${ic("x",18)}</button>${URLS[it.id]?`<img src="${URLS[it.id]}" alt="${esc(nm)}">`:`<div class="noimg" style="min-height:240px">No photo on this device</div>`}</div>
+   <div class="lbp"><h3>${esc(nm)}</h3><div class="sub">${used.length?"On "+used.map(dayLabel).join(", "):"Not on a day yet"}</div>
+    <div><label for="rn">Name</label><input id="rn" type="text" value="${esc(it.name||"")}" placeholder="For example: Ivory sherwani"></div>
+    <div><label for="rt">Type</label><select id="rt"><option value="">Choose a type</option>${TYPES.map(t=>`<option ${it.type===t?"selected":""}>${t}</option>`).join("")}</select></div>
+    <div class="row"><button class="btn pri" data-act="saveItem">Save</button></div>
+    <div><label>Which city is it in now?</label><div class="row" style="margin-top:8px"><button class="btn ${l==="A"?'on':''}" data-act="setloc" data-v="A">Allahabad</button><button class="btn ${l==="D"?'on':''}" data-act="setloc" data-v="D">Delhi</button></div></div>
+    <div class="row" style="margin-top:auto"><button class="btn warn" id="delBtn" data-act="delItem">Delete photo</button></div></div>`;
+}
+
+/* ---------------- events ---------------- */
+let clearT=null, drag=null;
+document.addEventListener("click",e=>{
+  if(selected&&view==="plan"){
+    const d=e.target.closest(".day");
+    if(d&&!e.target.closest("input,a,[data-act=remove],[data-act=loc],[data-act=addto],[data-act=note],[data-act=open]")){place(selected,d.dataset.slot); return;}
+  }
+  const t=e.target.closest("[data-act]"); if(!t) return;
+  const a=t.dataset.act, id=t.dataset.id;
+  if(a==="ovbg"){ if(e.target===t) closeLayer(); return; }
+  if(a==="pick"){ pick(id); return; }
+  if(a==="open"){ e.stopPropagation(); openItem(id); return; }
+  if(a==="loc"){ e.stopPropagation(); cycleLoc(id); return; }
+  if(a==="remove"){ e.stopPropagation(); removeFrom(id,t.dataset.slot); return; }
+  if(a==="addphotos"){ $("#fileIn").click(); return; }
+  if(a==="addto"){ e.stopPropagation(); target={slot:t.dataset.slot}; selected=null; q=""; $("#q").value=""; renderAll(); $("#cgrid").scrollTop=0; if(sheetMode.matches){sheetOpen=true; $("#closet").classList.add("open");} return; }
+  if(a==="note"){ const d=t.closest(".day"), row=d.querySelector(".nrow"); row.innerHTML=noteInput(t.dataset.slot,""); t.hidden=true; row.firstElementChild.focus(); return; }
+  if(a==="jump"){ e.preventDefault(); const el=$("#leg-"+t.dataset.leg); if(el) window.scrollTo({top:el.getBoundingClientRect().top+scrollY-120,behavior:"smooth"}); return; }
+  if(a==="cancel"){ selected=null; target=null; closeSheet(); renderAll(); return; }
+  if(a==="copyText"){ copyText(summaryText()); return; }
+  if(a==="exportFile"){ exportFile(); return; }
+  if(a==="importFile"){ $("#backupIn").click(); return; }
+  if(a==="closeLayer"){ closeLayer(); return; }
+  if(a==="setloc"){ state.loc[lbItem]=t.dataset.v; save(); renderAll(); paintItem(); return; }
+  if(a==="saveItem"){ const it=byId[lbItem]; it.name=$("#rn").value.trim()||it.name; it.type=$("#rt").value; save(); renderAll(); paintItem(); toast("Saved"); return; }
+  if(a==="delItem"){
+    if(delArm!==lbItem){ delArm=lbItem; t.textContent="Tap again to delete"; setTimeout(()=>{delArm=null; const b=$("#delBtn"); if(b) b.textContent="Delete photo";},4000); return; }
+    delArm=null; deleteItem(lbItem); return; }
+  if(a==="clear"){
+    if(!clearT){ t.textContent="Tap again to clear every day"; clearT=setTimeout(()=>{clearT=null; const b=$("#clearBtn"); if(b) b.textContent="Clear placements";},4000); return; }
+    clearTimeout(clearT); clearT=null; state.slots={}; state.notes={}; save(); renderAll(); toast("Placements cleared. Photos, names and cities are kept."); return; }
+});
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"){ if($("#layer").firstChild) closeLayer(); else if(selected||target){selected=null; target=null; closeSheet(); renderAll();} else if(sheetOpen) setSheet(false); return; }
+  if((e.key==="Enter"||e.key===" ")&&e.target.matches("[role=button][data-act]")){ e.preventDefault(); e.target.click(); }
+});
+document.addEventListener("input",e=>{
+  if(e.target.dataset&&e.target.dataset.note){ const v=e.target.value; if(v.trim()) state.notes[e.target.dataset.note]=v; else delete state.notes[e.target.dataset.note]; save(); }
+  if(e.target.id==="q"){q=e.target.value.toLowerCase(); renderCloset();}
+});
+document.addEventListener("focusout",e=>{const el=e.target; if(el.classList&&el.classList.contains("note1")&&!el.value.trim()){
+  const d=el.closest(".day"); delete state.notes[el.dataset.note]; save(); el.parentElement.innerHTML=""; const b=d&&d.querySelector("[data-act=note]"); if(b) b.hidden=false; }});
+$("#fileIn").addEventListener("change",e=>{ const f=e.target.files; if(f&&f.length) addFiles(f); e.target.value=""; });
+$("#backupIn").addEventListener("change",e=>{ const f=e.target.files&&e.target.files[0]; if(f) importFile(f); e.target.value=""; });
+$$(".seg button").forEach(b=>b.addEventListener("click",()=>setView(b.dataset.view)));
+$("#fFree").onclick=()=>{fFree=!fFree; renderCloset();};
+$("#fab").onclick=()=>setSheet(true);
+$("#clX").onclick=()=>setSheet(false);
+
+/* drag and drop: pieces onto days, photos from the computer onto the closet */
+document.addEventListener("dragstart",e=>{const el=e.target.closest(".cc,.pc"); if(!el) return; drag={id:el.dataset.id,from:el.dataset.from||null}; e.dataTransfer.setData("text/plain",el.dataset.id); e.dataTransfer.effectAllowed="move"; document.body.classList.add("selecting");});
+document.addEventListener("dragover",e=>{const d=e.target.closest(".day"); if(d&&drag){e.preventDefault(); d.classList.add("over");} else if(!drag&&e.target.closest("#closet")&&e.dataTransfer&&[...e.dataTransfer.types].includes("Files")) e.preventDefault();});
+document.addEventListener("dragleave",e=>{const d=e.target.closest(".day"); if(d&&!d.contains(e.relatedTarget)) d.classList.remove("over");});
+document.addEventListener("drop",e=>{
+  if(!drag&&e.target.closest("#closet")&&e.dataTransfer&&e.dataTransfer.files.length){ e.preventDefault(); addFiles(e.dataTransfer.files); return; }
+  const d=e.target.closest(".day"); $$(".day.over").forEach(x=>x.classList.remove("over")); if(!d||!drag) return; e.preventDefault();
+  if(drag.from&&drag.from!==d.dataset.slot) state.slots[drag.from]=(state.slots[drag.from]||[]).filter(x=>x!==drag.id); const id=drag.id; drag=null; place(id,d.dataset.slot);});
+document.addEventListener("dragend",()=>{drag=null; $$(".day.over").forEach(x=>x.classList.remove("over")); document.body.classList.toggle("selecting",!!selected&&view==="plan");});
+sheetMode.addEventListener&&sheetMode.addEventListener("change",()=>{ if(!sheetMode.matches) closeSheet(); });
+
+renderAll();
+loadPhotos().then(renderAll).catch(()=>{});
+</script>
+</body>
+</html>
